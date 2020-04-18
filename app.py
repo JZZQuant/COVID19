@@ -22,11 +22,11 @@ app.layout = app_layout
 
 @app.callback(
     Output("seir", "figure"),
-    [Input("map", "clickData")],
+    [Input("map", "value")],
     [State("seir", "figure")], )
 def update_time_series(map_click, city):
     if map_click is not None:
-        current_node = map_click["points"][0]["text"]
+        current_node = map_click
         return network_epidemic_calc(current_node)
     else:
         city = city["layout"]["title"]["text"].split(" ")[-1]
@@ -73,4 +73,4 @@ def download_nodal():
                      as_attachment=True)
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)

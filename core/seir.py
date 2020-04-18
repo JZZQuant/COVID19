@@ -6,7 +6,7 @@ import json
 import datetime
 import _pickle as cPickle
 import pandas as pd
-from core.scrap import states,states_series,global_dict,node_config_list
+from core.scrap import global_dict,node_config_list
 from visuals.layouts import get_bar_layout
 from core.configuration import *
 
@@ -29,22 +29,22 @@ def plot_graph(T, I, R, Severe_H, R_Fatal, interventions, city):
     trace4 = go.Scatter(x=T[days+low_offset:days+high_offset], y=fatal, name='Fatalities &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;', text=np.diff(fatal),
                     marker=dict(color='rgb(56,108,176,0.2)'), hovertemplate=ht)
 
-    if city=="India":
-        ts = states_series.groupby("Date Announced",as_index=False)["Patient Number"].sum().reset_index()
-    else :
-        ts = states_series[states_series.States==city].groupby("Date Announced",as_index=False)["Patient Number"].sum().reset_index()
+    # if city=="India":
+    #     ts = states_series.groupby("Date Announced",as_index=False)["Patient Number"].sum().reset_index()
+    # else :
+    #     ts = states_series[states_series.States==city].groupby("Date Announced",as_index=False)["Patient Number"].sum().reset_index()
+    #
+    # ts["Date Announced"] = pd.to_datetime(ts["Date Announced"]).dt.date
+    # r = pd.date_range(start=ts["Date Announced"].min(), end =datetime.datetime.now().date())
+    # ts = ts.set_index("Date Announced").reindex(r).fillna(0).rename_axis("Date Announced").reset_index()
+    # ts["Patient Number"] = ts["Patient Number"].cumsum()
+    # filter = ts["Date Announced"].dt.date >= datetime.datetime.now().date()- datetime.timedelta(days=-low_offset)
+    # y_actual = [0]*(-low_offset - len(ts[filter]["Patient Number"])) + list(ts[filter]["Patient Number"])
+    #
+    # trace5 = go.Scatter(x=T[days+ low_offset:days], y=y_actual , name='Actual Infected &nbsp; &nbsp;', text=total,
+    #                 marker=dict(color='rgb(0,0,0,0.2)'), hovertemplate=ht_active)
 
-    ts["Date Announced"] = pd.to_datetime(ts["Date Announced"]).dt.date
-    r = pd.date_range(start=ts["Date Announced"].min(), end =datetime.datetime.now().date())
-    ts = ts.set_index("Date Announced").reindex(r).fillna(0).rename_axis("Date Announced").reset_index()
-    ts["Patient Number"] = ts["Patient Number"].cumsum()
-    filter = ts["Date Announced"].dt.date >= datetime.datetime.now().date()- datetime.timedelta(days=-low_offset)
-    y_actual = [0]*(-low_offset - len(ts[filter]["Patient Number"])) + list(ts[filter]["Patient Number"])
-
-    trace5 = go.Scatter(x=T[days+ low_offset:days], y=y_actual , name='Actual Infected &nbsp; &nbsp;', text=total,
-                    marker=dict(color='rgb(0,0,0,0.2)'), hovertemplate=ht_active)
-
-    data = [trace1, trace2, trace3, trace4, trace5]
+    data = [trace1, trace2, trace3, trace4]
 
     for intervention in interventions:
         if (city == "India" and intervention["intervention_type"] == "global") or city != "India":
